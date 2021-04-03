@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JS Renamer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/voca/1.4.0/voca.min.js"></script>
+</head>
+<body style="background-color: #cccccc;">
+JS Renamer 1.0.6
+<hr>
+Enter directory path:&nbsp;<input type="text" id="enterPath" style="width:400px">
+<br><br>
+Enter regular expression filter:&nbsp;<input type="text" id="enterRegexFilter" style="width:336px">
+<input type="checkbox" id="caseInsFilter"><label for="caseInsFilter">case insensitive match</label>
+<br><br>
+<input type="button" style="width:200px" value="Open directory" onclick="openDirectory()">
+<input type="button" style="width:200px" value="Sort file names" onclick="sortOldNamesList()">
+<br><br>
+<textarea wrap="off" onscroll="scrollNew()" id="oldNamesList" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort file names' and sort names of files to be renamed"></textarea>
+<textarea wrap="off" onscroll="scrollOld()" id="newNamesList" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Methods are stored as JSON&#10;- Press 'Generate new names list' and sort new names"></textarea>
+<textarea wrap="off" id="methodsList" rows="30" cols="35" readonly>{ "methods" : [] }</textarea>
+<br><br>
+<input type="button" style="width:200px" value="Clear old names list" onclick="clearOldNamesList()">
+<input type="button" style="width:200px" value="Clear new names list" onclick="clearNewNamesList()">
+<input type="button" style="width:200px" value="Clear methods list" onclick="clearMethodsList()">
+<input type="button" style="width:200px" value="Clear settings" onclick="location.reload()">
+<hr>
+<input type="button" style="width:200px" value="Generate new names list" onclick="getNewNamesList()">
+<input type="button" style="width:200px" value="Rename" onclick="rename()">
+<input type="checkbox" id="openDir" checked><label for="openDir">open directory after renaming process</label>
+<hr>
+Enter starting number:&nbsp;<input type="text" id="enterNumber" style="width:200px">
+<br><br>
+Enter increment:&nbsp;<input type="text" id="enterIncrement" style="width:236px">
+<br><br>
+<input type="checkbox" id="prependNum"><label for="prependNum">prepend number</label>
+<input type="checkbox" id="appendNum" checked><label for="appendNum">append number</label>
+<br><br>
+<input type="button" style="width:200px" value="Numbering" onclick="addMethod(this.value)">
+<hr>
+Enter regular expression:&nbsp;<input type="text" id="enterRegex" style="width:200px" value=".+">
+<br><br>
+Enter replacement:&nbsp;<input type="text" id="enterReplacement" style="width:240px">
+<br><br>
+<input type="checkbox" id="global"><label for="global">global match</label>
+<input type="checkbox" id="caseIns"><label for="caseIns">case insensitive match</label>
+<input type="checkbox" id="modName" checked><label for="modName">modify name</label>
+<input type="checkbox" id="modExt"><label for="modExt">modify extension</label>
+<br><br>
+<input type="button" style="width:200px" value="Upper case" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Lower case" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Inverse case" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Alternating case 1" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Alternating case 2" onclick="addMethod(this.value)">
+<br><br>
+<input type="button" style="width:200px" value="Capitalized case" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Latinise" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Reverse" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Trim" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Replace" onclick="addMethod(this.value)">
+<hr>
+<script>
+
+let object = new ActiveXObject("Scripting.FileSystemObject");
+
+function openDirectory()
+{
+ let dirPath = (document.getElementById("enterPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ if(object.FolderExists(dirPath) && dirPath !== "\\")
+ {
+  window.open(dirPath);
+ }
+ else
+ {
+  alert("Directory not found");
+ }
+}
+
+function scrollNew()
+{
+ document.getElementById("newNamesList").scrollTop = document.getElementById("oldNamesList").scrollTop;
+ document.getElementById("newNamesList").scrollLeft = document.getElementById("oldNamesList").scrollLeft;
+}
+
+function scrollOld()
+{
+ document.getElementById("oldNamesList").scrollTop = document.getElementById("newNamesList").scrollTop;
+ document.getElementById("oldNamesList").scrollLeft = document.getElementById("newNamesList").scrollLeft;
+}
+
+function getName(fileName)
+{
+ let pos = fileName.lastIndexOf(".");
+ if(pos !== -1)
+ {
+  return fileName.substring(0,pos);
+ }
+ return fileName;
+}
+
+function getExtension(fileName)
+{
+ let pos = fileName.lastIndexOf(".");
+ if(pos !== -1)
+ {
+  return fileName.substring(pos + 1);
+ }
+ return "";
+}
+
+function trim(text)
+{
+ return text.trim();
+}
+
+function reverse(text)
+{
+ let newText = "";
+ for (let i = text.length - 1; i >= 0; i--)
+ {
+  newText += text[i];
+ }
+ return newText;
+}
+
+function toInverseCase(text)
+{
+ let newText = "";
+ for (let i = 0; i < text.length; i++)
+ {
+  if (text[i] === text[i].toUpperCase()) 
+  {
+   newText += text[i].toLowerCase();
+  } 
+  else 
+  {
+   newText += text[i].toUpperCase();
+  }
+ }
+ return newText;
+}
+
+function toAlternatingCase1(text)
+{
+ let newText = "";
+ let toUp = true;
+ for (let i = 0; i < text.length; i++)
+ {
+  if (text[i].toUpperCase() !== text[i].toLowerCase())
+  {
+   if(toUp === true)
+   {
+    newText += text[i].toUpperCase();
+    toUp = false;
+   }
+   else
+   {
+    newText += text[i].toLowerCase();
+    toUp = true;
+   }
+  }
+  else
+  {
+   newText += text[i];
+  }
+ }
+ return newText;
+}
+
+function toAlternatingCase2(text)
+{
+ let newText = "";
+ let toUp = false;
+ for (let i = 0; i < text.length; i++)
+ {
+  if (text[i].toUpperCase() !== text[i].toLowerCase())
+  {
+   if(toUp === true)
+   {
+    newText += text[i].toUpperCase();
+    toUp = false;
+   }
+   else
+   {
+    newText += text[i].toLowerCase();
+    toUp = true;
+   }
+  }
+  else
+  {
+   newText += text[i];
+  }
+ }
+ return newText;
+}
+
+function toCapitalizedCase(text)
+{
+ let newText = "";
+ let toUp = true;
+ for (let i = 0; i < text.length; i++)
+ {
+  if(text[i].search(/\s/) === -1)
+  {
+   if (toUp === true) 
+   {
+	newText += text[i].toUpperCase();
+	toUp = false;
+   }
+   else
+   {
+	newText += text[i].toLowerCase();
+   }
+  }
+  else
+  {
+   newText += text[i];
+   toUp = true;      
+  }
+ }
+ return newText;
+}
+
+function toUpperCase(text)
+{
+ return text.toUpperCase();
+}
+
+function toLowerCase(text)
+{
+ return text.toLowerCase();
+}
+
+function numbering(oldFileName, appendNum, prependNum, num)
+{
+ let name = getName(oldFileName);
+ let ext = getExtension(oldFileName);
+ if(appendNum)
+ {
+  name = name + num;
+ }
+ if(prependNum)
+ {
+  name = num + name;
+ }
+ if(ext !== "")
+ {
+  return name + "." + ext;
+ }
+ return name;
+}
+
+function replaceWithMethod(oldFileName, regExp, method, modName, modExt)
+{
+ let name = getName(oldFileName);
+ let ext = getExtension(oldFileName);
+ if(modExt && ext !== "")
+ {
+  ext = ext.replace(regExp, function(match) { return method(match); });
+ }
+ if(modName)
+ {
+  name = name.replace(regExp, function(match) { return method(match); });
+ }
+ if(ext !== "")
+ {
+  return name + "." + ext;
+ }
+ return name;
+}
+
+function replaceWithReplacement(oldFileName, regExp, replacement, modName, modExt)
+{
+ let name = getName(oldFileName);
+ let ext = getExtension(oldFileName);
+ if(modExt && ext !== "")
+ {
+  ext = ext.replace(regExp,replacement);
+ }
+ if(modName)
+ {
+  name = name.replace(regExp,replacement);
+ }
+ if(ext !== "")
+ {
+  return name + "." + ext;
+ }
+ return name;
+}
+
+function clearMethodsList()
+{
+ document.getElementById("methodsList").value = '{ "methods" : [] }';
+}
+
+function addMethod(methodName)
+{
+ methodName = methodName.toLowerCase();
+ let methodsJSON = JSON.parse(document.getElementById("methodsList").value);
+ let num = parseInt(document.getElementById("enterNumber").value);
+ let increment = parseInt(document.getElementById("enterIncrement").value);
+ let appendNum = document.getElementById("appendNum").checked;
+ let prependNum = document.getElementById("prependNum").checked;
+ let regex = document.getElementById("enterRegex").value;
+ let replacement = document.getElementById("enterReplacement").value;
+ let modExt = document.getElementById("modExt").checked;
+ let modName = document.getElementById("modName").checked;
+ let global = document.getElementById("global").checked;
+ let caseIns = document.getElementById("caseIns").checked;
+ if(methodName === "numbering")
+ {
+  methodsJSON.methods.push({"name": methodName, "startingNumber": num, "increment" : increment, "prepend": prependNum, "append": appendNum});
+ }
+ else if(methodName === "replace")
+ {
+  methodsJSON.methods.push({"name": methodName, "regularExpression": regex, "global" : global, "caseInsensitive" : caseIns, "replacement" : replacement, "modifyName" : modName, "modifyExtension" : modExt});
+ }
+ else
+ {
+  methodsJSON.methods.push({"name": methodName, "regularExpression": regex, "global" : global, "caseInsensitive" : caseIns, "modifyName" : modName, "modifyExtension" : modExt});
+ }
+ document.getElementById("methodsList").value = JSON.stringify(methodsJSON,null,1);
+}
+
+function getRegex(regex, global, caseIns)
+{
+ if(regex === undefined)
+ {
+  return null;
+ }
+ if(global && caseIns)
+ {
+  return new RegExp(regex, "gi");
+ }
+ if(global && !caseIns)
+ {
+  return new RegExp(regex, "g");
+ }
+ if(!global && caseIns)
+ {
+  return new RegExp(regex, "i");
+ }
+ return new RegExp(regex);
+}
+
+function getNewFileName(methodName, oldFileName, regex, global, caseIns, replacement, num, increment, appendNum, prependNum, modName, modExt)
+{
+ let regExp = getRegex(regex, global, caseIns);
+ if(methodName === "numbering")
+ {
+  num += increment;
+  return numbering(oldFileName, appendNum, prependNum, num)
+ }
+ if(methodName === "replace")
+ {
+  return replaceWithReplacement(oldFileName, regExp, replacement, modName, modExt);
+ }
+ if(methodName === "upper case")
+ {
+  return replaceWithMethod(oldFileName, regExp, toUpperCase, modName, modExt);
+ }
+ if(methodName === "lower case")
+ {
+  return replaceWithMethod(oldFileName, regExp, toLowerCase, modName, modExt);
+ }
+ if(methodName === "inverse case")
+ {
+  return replaceWithMethod(oldFileName, regExp, toInverseCase, modName, modExt);
+ }
+ if(methodName === "alternating case 1")
+ {
+  return replaceWithMethod(oldFileName, regExp, toAlternatingCase1, modName, modExt);
+ }
+ if(methodName === "alternating case 2")
+ {
+  return replaceWithMethod(oldFileName, regExp, toAlternatingCase2, modName, modExt);
+ }
+ if(methodName === "capitalized case")
+ {
+  return replaceWithMethod(oldFileName, regExp, toCapitalizedCase, modName, modExt);
+ }
+ if(methodName === "latinise")
+ {
+  return replaceWithMethod(oldFileName, regExp, v.latinise, modName, modExt);
+ }
+ if(methodName === "reverse")
+ {
+  return replaceWithMethod(oldFileName, regExp, reverse, modName, modExt);
+ }
+ if(methodName === "trim")
+ {
+  return replaceWithMethod(oldFileName, regExp, trim, modName, modExt);
+ }
+ return oldFileName;
+}
+
+function clearOldNamesList()
+{
+ document.getElementById("oldNamesList").value = '';
+}
+
+function clearNewNamesList()
+{
+ document.getElementById("newNamesList").value = '';
+}
+
+function getNewNamesList()
+{
+ let oldNames = document.getElementById("oldNamesList").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
+ let methods = JSON.parse(document.getElementById("methodsList").value).methods;
+ let newNamesList = "";
+ for(let i = 0; i < oldNames.length; i++)
+ {
+  let newName = oldNames[i];
+  for(let j = 0; j < methods.length; j++)
+  {
+   let num = methods[j].startingNumber;
+   let increment = methods[j].increment;
+   let appendNum = methods[j].append;
+   let prependNum = methods[j].prepend;
+   let regex = methods[j].regularExpression;
+   let replacement = methods[j].replacement;
+   let modExt = methods[j].modifyExtension;
+   let modName = methods[j].modifyName;
+   let global = methods[j].global;
+   let caseIns = methods[j].caseInsensitive;
+   newName = getNewFileName(methods[j].name, newName, regex, global, caseIns, replacement, num, i*increment, appendNum, prependNum, modName, modExt);
+  }
+  newNamesList += newName + "\n";
+ }
+ newNamesList = newNamesList.slice(0, -1);
+ document.getElementById("newNamesList").value = newNamesList;
+}
+
+function includes(container, content)
+{
+ if(container !== null)
+ {
+  return container.indexOf(content) !== -1;
+ } 
+ return false;
+}
+
+function sortOldNamesList()
+{
+ let dirPath = (document.getElementById("enterPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ let regex = document.getElementById("enterRegexFilter").value;
+ let caseIns = document.getElementById("caseInsFilter").checked;
+ let regExp = getRegex(regex, false, caseIns);
+ if(!object.FolderExists(dirPath) || dirPath === "\\")
+ {
+  alert("Directory not found");
+ }
+ else
+ {
+  let files = new Enumerator(object.GetFolder(dirPath).Files);
+  let fileNames = [];
+  for(;!files.atEnd();files.moveNext())
+  {
+   let fileName = files.item().Name;
+   if(includes(fileName.match(regExp),fileName))
+   {
+    fileNames.push(fileName);
+   }
+  }
+  let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+  fileNames.sort(collator.compare);
+  let namesList = "";
+  for(let i = 0; i < fileNames.length; i++)
+  {
+   namesList += fileNames[i] + "\n"; 
+  }
+  namesList = namesList.slice(0, -1);
+  document.getElementById("oldNamesList").value = namesList;
+  if(namesList === "")
+  {
+   alert("No file found");
+  }
+ }
+}
+
+function rename()
+{
+ let openDir = document.getElementById("openDir").checked;
+ let dirPath = (document.getElementById("enterPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ let oldNames = document.getElementById("oldNamesList").value.split("\n").filter(function (text){return text.search(/[^\s]/g) !== -1; });
+ let newNames = document.getElementById("newNamesList").value.split("\n").filter(function (text){return text.search(/[^\s]/g) !== -1; });
+ let n = 0;
+ for(let i = 0; i < oldNames.length; i++)
+ {
+  if(oldNames[i] !== undefined && newNames[i] !== undefined && newNames[i] !== oldNames[i])
+  {
+   if(object.FileExists(dirPath + oldNames[i]))
+   {
+    n++;
+    object.MoveFile(dirPath + oldNames[i], dirPath + newNames[i]);
+   }
+  }
+ }
+ alert(n + " file(s) renamed");
+ if (object.FolderExists(dirPath) && dirPath !== "\\" && openDir)
+ {
+  window.open(dirPath);
+ }
+}
+
+</script>
+</body>
+</html>
