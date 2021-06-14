@@ -1,2 +1,2 @@
-# JSRenamer 1.0.6
+# JSRenamer 1.1.0
 JSRenamer is a file renamer written as a HTML page using JavaScript with legacy/deprecated ActiveXObject functionaly from JScript dialect. It works on IE browser only.
