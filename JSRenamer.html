@@ -5,47 +5,46 @@
 <title>JS Renamer</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/voca/1.4.0/voca.min.js"></script>
 </head>
-<body style="background-color: #cccccc;">
-JS Renamer 1.0.6
+<body style="background-color: #ADD8E6;">
+JS Renamer 1.1.0
 <hr>
-Enter directory path:&nbsp;<input type="text" id="enterPath" style="width:400px">
+<input type="text" id="dirPath" style="width:400px" placeholder="Enter directory path">
 <br><br>
-Enter regular expression filter:&nbsp;<input type="text" id="enterRegexFilter" style="width:336px">
-<input type="checkbox" id="caseInsFilter"><label for="caseInsFilter">case insensitive match</label>
+<input type="text" id="filter" style="width:400px" placeholder="Enter regular expression filter">
+<input type="checkbox" id="caseInsFilter"><label for="caseInsFilter">Case insensitive match</label>
 <br><br>
 <input type="button" style="width:200px" value="Open directory" onclick="openDirectory()">
-<input type="button" style="width:200px" value="Sort file names" onclick="sortOldNamesList()">
+<input type="button" style="width:200px" value="Sort file names" onclick="sortOldNames()">
+<input type="button" style="width:200px" value="About" onclick="showAbout()">
 <br><br>
-<textarea wrap="off" onscroll="scrollNew()" id="oldNamesList" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort file names' and sort names of files to be renamed"></textarea>
-<textarea wrap="off" onscroll="scrollOld()" id="newNamesList" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Methods are stored as JSON&#10;- Press 'Generate new names list' and sort new names"></textarea>
-<textarea wrap="off" id="methodsList" rows="30" cols="35" readonly>{ "methods" : [] }</textarea>
+<textarea wrap="off" onscroll="scrollNew()" id="oldNames" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort file names' and sort names of files to be renamed"></textarea>
+<textarea wrap="off" onscroll="scrollOld()" id="newNames" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Method data are stored as JSON&#10;- Press 'Generate new names' and sort new names"></textarea>
+<textarea wrap="off" id="methods" rows="30" cols="35" readonly>{ "methods" : [] }</textarea>
 <br><br>
-<input type="button" style="width:200px" value="Clear old names list" onclick="clearOldNamesList()">
-<input type="button" style="width:200px" value="Clear new names list" onclick="clearNewNamesList()">
-<input type="button" style="width:200px" value="Clear methods list" onclick="clearMethodsList()">
-<input type="button" style="width:200px" value="Clear settings" onclick="location.reload()">
+<input type="button" style="width:200px" value="Clear old names" onclick="clearArea(this.value)">
+<input type="button" style="width:200px" value="Clear new names" onclick="clearArea(this.value)">
+<input type="button" style="width:200px" value="Clear methods" onclick="clearArea(this.value)">
+<input type="button" style="width:200px" value="Reset" onclick="location.reload()">
+<br><br>
+<input type="button" style="width:200px" value="Generate new names" onclick="getNewNames()">
+<input type="button" style="width:200px" value="Rename files" onclick="renameFiles()">
+<input type="checkbox" id="openDir"><label for="openDir">Open directory after renaming process</label>
 <hr>
-<input type="button" style="width:200px" value="Generate new names list" onclick="getNewNamesList()">
-<input type="button" style="width:200px" value="Rename" onclick="rename()">
-<input type="checkbox" id="openDir" checked><label for="openDir">open directory after renaming process</label>
-<hr>
-Enter starting number:&nbsp;<input type="text" id="enterNumber" style="width:200px">
+<input type="text" id="length" style="width:200px" placeholder="Enter length">
+<input type="text" id="padder" style="width:200px" placeholder="Enter padder text">
 <br><br>
-Enter increment:&nbsp;<input type="text" id="enterIncrement" style="width:236px">
+<input type="text" id="number" style="width:200px" placeholder="Enter starting number">
+<input type="text" id="increment" style="width:200px" placeholder="Enter increment">
+<input type="checkbox" id="prependNum"><label for="prependNum">Prepend number</label>
+<input type="checkbox" id="appendNum"><label for="appendNum">Append number</label>
 <br><br>
-<input type="checkbox" id="prependNum"><label for="prependNum">prepend number</label>
-<input type="checkbox" id="appendNum" checked><label for="appendNum">append number</label>
+<input type="text" id="regex" style="width:200px" placeholder="Enter regular expression">
+<input type="text" id="replacement" style="width:200px" placeholder="Enter replacement">
+<input type="checkbox" id="global"><label for="global">Global match</label>
+<input type="checkbox" id="caseIns"><label for="caseIns">Case insensitive match</label>
 <br><br>
-<input type="button" style="width:200px" value="Numbering" onclick="addMethod(this.value)">
-<hr>
-Enter regular expression:&nbsp;<input type="text" id="enterRegex" style="width:200px" value=".+">
-<br><br>
-Enter replacement:&nbsp;<input type="text" id="enterReplacement" style="width:240px">
-<br><br>
-<input type="checkbox" id="global"><label for="global">global match</label>
-<input type="checkbox" id="caseIns"><label for="caseIns">case insensitive match</label>
-<input type="checkbox" id="modName" checked><label for="modName">modify name</label>
-<input type="checkbox" id="modExt"><label for="modExt">modify extension</label>
+<input type="checkbox" id="modName"><label for="modName">Modify name</label>
+<input type="checkbox" id="modExt"><label for="modExt">Modify extension</label>
 <br><br>
 <input type="button" style="width:200px" value="Upper case" onclick="addMethod(this.value)">
 <input type="button" style="width:200px" value="Lower case" onclick="addMethod(this.value)">
@@ -58,14 +57,32 @@ Enter replacement:&nbsp;<input type="text" id="enterReplacement" style="width:24
 <input type="button" style="width:200px" value="Reverse" onclick="addMethod(this.value)">
 <input type="button" style="width:200px" value="Trim" onclick="addMethod(this.value)">
 <input type="button" style="width:200px" value="Replace" onclick="addMethod(this.value)">
-<hr>
+<br><br>
+<input type="button" style="width:200px" value="Numbering" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Pad right" onclick="addMethod(this.value)">
+<input type="button" style="width:200px" value="Pad left" onclick="addMethod(this.value)">
 <script>
 
 let object = new ActiveXObject("Scripting.FileSystemObject");
 
+function showAbout()
+{
+ var about = "JS Renamer\nAuthor: Al Armato\nVersion: 1.1.0\n\n" + 
+            "This program is free software: you can redistribute it and/or modify\n" + 
+       		"it under the terms of the GNU General Public License as published by\n" + 
+       		"the Free Software Foundation, either version 3 of the License, or\n" + 
+       		"(at your option) any later version.\n\n" + 
+       		"This program is distributed in the hope that it will be useful,\n" + 
+       		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n" + 
+       		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n" + 
+       		"GNU General Public License for more details.\n\n" + 
+       		"Visit https://www.gnu.org/licenses.";
+ alert(about);
+}
+
 function openDirectory()
 {
- let dirPath = (document.getElementById("enterPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ let dirPath = (document.getElementById("dirPath").value.trim() + "\\").replace(/\\+/g,"\\");
  if(object.FolderExists(dirPath) && dirPath !== "\\")
  {
   window.open(dirPath);
@@ -78,66 +95,26 @@ function openDirectory()
 
 function scrollNew()
 {
- document.getElementById("newNamesList").scrollTop = document.getElementById("oldNamesList").scrollTop;
- document.getElementById("newNamesList").scrollLeft = document.getElementById("oldNamesList").scrollLeft;
+ document.getElementById("newNames").scrollTop = document.getElementById("oldNames").scrollTop;
+ document.getElementById("newNames").scrollLeft = document.getElementById("oldNames").scrollLeft;
 }
 
 function scrollOld()
 {
- document.getElementById("oldNamesList").scrollTop = document.getElementById("newNamesList").scrollTop;
- document.getElementById("oldNamesList").scrollLeft = document.getElementById("newNamesList").scrollLeft;
+ document.getElementById("oldNames").scrollTop = document.getElementById("newNames").scrollTop;
+ document.getElementById("oldNames").scrollLeft = document.getElementById("newNames").scrollLeft;
 }
 
 function getName(fileName)
 {
  let pos = fileName.lastIndexOf(".");
- if(pos !== -1)
- {
-  return fileName.substring(0,pos);
- }
- return fileName;
+ return (pos !== -1) ? fileName.substring(0, pos) : fileName;
 }
 
 function getExtension(fileName)
 {
  let pos = fileName.lastIndexOf(".");
- if(pos !== -1)
- {
-  return fileName.substring(pos + 1);
- }
- return "";
-}
-
-function trim(text)
-{
- return text.trim();
-}
-
-function reverse(text)
-{
- let newText = "";
- for (let i = text.length - 1; i >= 0; i--)
- {
-  newText += text[i];
- }
- return newText;
-}
-
-function toInverseCase(text)
-{
- let newText = "";
- for (let i = 0; i < text.length; i++)
- {
-  if (text[i] === text[i].toUpperCase()) 
-  {
-   newText += text[i].toLowerCase();
-  } 
-  else 
-  {
-   newText += text[i].toUpperCase();
-  }
- }
- return newText;
+ return (pos !== -1) ? fileName.substring(pos + 1) : "";
 }
 
 function toAlternatingCase1(text)
@@ -194,6 +171,51 @@ function toAlternatingCase2(text)
  return newText;
 }
 
+function padText(text, padder, length, leftOrRight)
+{
+ let paddedTextChars = v.graphemes(text);
+ let padderChars = v.graphemes(padder);
+ let nPaddings = Math.ceil((length - paddedTextChars.length)/padderChars.length);
+ if(!leftOrRight)
+ {
+  for(let i = 0; i < nPaddings; i++)
+  {
+   paddedTextChars = paddedTextChars.concat(padderChars);
+  }
+ }
+ else
+ {
+  for(let i = 0; i < nPaddings; i++)
+  {
+   padderChars = padderChars.concat(padderChars);
+  }
+  paddedTextChars = padderChars.concat(paddedTextChars);
+ }  
+ let nCharsToBeRemoved = paddedTextChars.length - length;
+ if(!leftOrRight)
+ {
+  while( nCharsToBeRemoved > 0 ) 
+  {
+   paddedTextChars.pop();
+   nCharsToBeRemoved--;
+  }
+ }
+ else
+ {
+  while( nCharsToBeRemoved > 0 ) 
+  {
+   paddedTextChars.shift();
+   nCharsToBeRemoved--;
+  }
+ }
+ let paddedText = "";
+ for(let i = 0; i < paddedTextChars.length; i++)
+ {
+  paddedText += paddedTextChars[i];
+ }
+ return paddedText;
+}
+
 function toCapitalizedCase(text)
 {
  let newText = "";
@@ -219,16 +241,6 @@ function toCapitalizedCase(text)
   }
  }
  return newText;
-}
-
-function toUpperCase(text)
-{
- return text.toUpperCase();
-}
-
-function toLowerCase(text)
-{
- return text.toLowerCase();
 }
 
 function numbering(oldFileName, appendNum, prependNum, num)
@@ -269,6 +281,25 @@ function replaceWithMethod(oldFileName, regExp, method, modName, modExt)
  return name;
 }
 
+function replaceWithPad(oldFileName, regExp, method, padder, length, leftOrRight, modName, modExt)
+{
+ let name = getName(oldFileName);
+ let ext = getExtension(oldFileName);
+ if(modExt && ext !== "")
+ {
+  ext = ext.replace(regExp, function(match) { return method(match, padder, length, leftOrRight); });
+ }
+ if(modName)
+ {
+  name = name.replace(regExp, function(match) { return method(match, padder, length, leftOrRight); });
+ }
+ if(ext !== "")
+ {
+  return name + "." + ext;
+ }
+ return name;
+}
+
 function replaceWithReplacement(oldFileName, regExp, replacement, modName, modExt)
 {
  let name = getName(oldFileName);
@@ -288,126 +319,173 @@ function replaceWithReplacement(oldFileName, regExp, replacement, modName, modEx
  return name;
 }
 
-function clearMethodsList()
+function clearArea(filter)
 {
- document.getElementById("methodsList").value = '{ "methods" : [] }';
+ if(filter === "Clear new names")
+ {
+  document.getElementById("newNames").value = "";
+ }
+ if(filter === "Clear old names")
+ {
+  document.getElementById("oldNames").value = "";
+ }
+ if(filter === "Clear methods")
+ {
+  document.getElementById("methods").value = "{ \"methods\" : [] }";
+ } 
 }
 
-function addMethod(methodName)
+function addMethod(filter)
 {
- methodName = methodName.toLowerCase();
- let methodsJSON = JSON.parse(document.getElementById("methodsList").value);
- let num = parseInt(document.getElementById("enterNumber").value);
- let increment = parseInt(document.getElementById("enterIncrement").value);
+ let json = JSON.parse(document.getElementById("methods").value);
+ let num = parseInt(document.getElementById("number").value);
+ let increment = parseInt(document.getElementById("increment").value);
  let appendNum = document.getElementById("appendNum").checked;
  let prependNum = document.getElementById("prependNum").checked;
- let regex = document.getElementById("enterRegex").value;
- let replacement = document.getElementById("enterReplacement").value;
+ let regex = document.getElementById("regex").value;
+ let replacement = document.getElementById("replacement").value;
  let modExt = document.getElementById("modExt").checked;
  let modName = document.getElementById("modName").checked;
  let global = document.getElementById("global").checked;
  let caseIns = document.getElementById("caseIns").checked;
- if(methodName === "numbering")
+ let length = parseInt(document.getElementById("length").value);
+ let padder = document.getElementById("padder").value;
+ if(filter === "Numbering")
  {
-  methodsJSON.methods.push({"name": methodName, "startingNumber": num, "increment" : increment, "prepend": prependNum, "append": appendNum});
+  json.methods.push({
+                     "name": filter, 
+                     "startingNumber": num,
+					 "increment" : increment, 
+					 "prepend": prependNum, 
+					 "append": appendNum
+					});
  }
- else if(methodName === "replace")
+ else if(filter === "Replace")
  {
-  methodsJSON.methods.push({"name": methodName, "regularExpression": regex, "global" : global, "caseInsensitive" : caseIns, "replacement" : replacement, "modifyName" : modName, "modifyExtension" : modExt});
+  json.methods.push({
+                     "name": filter, 
+					 "regularExpression": regex,
+					 "global" : global, 
+					 "caseInsensitive" : caseIns, 
+					 "replacement" : replacement, 
+					 "modifyName" : modName, 
+					 "modifyExtension" : modExt
+					});
+ }
+ else if(filter === "Pad right" || filter === "Pad left")
+ {
+  json.methods.push({
+                     "name": filter, 
+					 "regularExpression": regex,
+					 "global" : global, 
+					 "caseInsensitive" : caseIns, 
+					 "padderText" : padder,
+					 "length" : length,
+					 "modifyName" : modName, 
+					 "modifyExtension" : modExt
+					});
  }
  else
  {
-  methodsJSON.methods.push({"name": methodName, "regularExpression": regex, "global" : global, "caseInsensitive" : caseIns, "modifyName" : modName, "modifyExtension" : modExt});
+  json.methods.push({
+                     "name": filter, 
+					 "regularExpression": regex, 
+					 "global" : global, 
+					 "caseInsensitive" : caseIns, 
+					 "modifyName" : modName, 
+					 "modifyExtension" : modExt
+					});
  }
- document.getElementById("methodsList").value = JSON.stringify(methodsJSON,null,1);
+ document.getElementById("methods").value = JSON.stringify(json,null,1);
 }
 
 function getRegex(regex, global, caseIns)
 {
- if(regex === undefined)
+ try
  {
-  return null;
+  if(global && caseIns)
+  {
+   return new RegExp(regex,"gi");
+  }
+  if(global && !caseIns)
+  {
+   return new RegExp(regex,"g");								
+  }
+  if(!global && caseIns)
+  {
+   return new RegExp(regex,"i");								
+  }
+  return new RegExp(regex);
  }
- if(global && caseIns)
+ catch(error)
  {
-  return new RegExp(regex, "gi");
+  return new RegExp(".+");
  }
- if(global && !caseIns)
- {
-  return new RegExp(regex, "g");
- }
- if(!global && caseIns)
- {
-  return new RegExp(regex, "i");
- }
- return new RegExp(regex);
 }
 
-function getNewFileName(methodName, oldFileName, regex, global, caseIns, replacement, num, increment, appendNum, prependNum, modName, modExt)
+function getNewName(methodName, oldFileName, regex, global, caseIns, replacement, num, increment, appendNum, prependNum, padder, length, modName, modExt)
 {
  let regExp = getRegex(regex, global, caseIns);
- if(methodName === "numbering")
+ if(methodName === "Numbering")
  {
   num += increment;
   return numbering(oldFileName, appendNum, prependNum, num)
  }
- if(methodName === "replace")
+ if(methodName === "Replace")
  {
   return replaceWithReplacement(oldFileName, regExp, replacement, modName, modExt);
  }
- if(methodName === "upper case")
+ if(methodName === "Upper case")
  {
-  return replaceWithMethod(oldFileName, regExp, toUpperCase, modName, modExt);
+  return replaceWithMethod(oldFileName, regExp, v.upperCase, modName, modExt);
  }
- if(methodName === "lower case")
+ if(methodName === "Lower case")
  {
-  return replaceWithMethod(oldFileName, regExp, toLowerCase, modName, modExt);
+  return replaceWithMethod(oldFileName, regExp, v.lowerCase, modName, modExt);
  }
- if(methodName === "inverse case")
+ if(methodName === "Inverse case")
  {
-  return replaceWithMethod(oldFileName, regExp, toInverseCase, modName, modExt);
+  return replaceWithMethod(oldFileName, regExp, v.swapCase, modName, modExt);
  }
- if(methodName === "alternating case 1")
+ if(methodName === "Alternating case 1")
  {
   return replaceWithMethod(oldFileName, regExp, toAlternatingCase1, modName, modExt);
  }
- if(methodName === "alternating case 2")
+ if(methodName === "Alternating case 2")
  {
   return replaceWithMethod(oldFileName, regExp, toAlternatingCase2, modName, modExt);
  }
- if(methodName === "capitalized case")
+ if(methodName === "Capitalized case")
  {
   return replaceWithMethod(oldFileName, regExp, toCapitalizedCase, modName, modExt);
  }
- if(methodName === "latinise")
+ if(methodName === "Latinise")
  {
   return replaceWithMethod(oldFileName, regExp, v.latinise, modName, modExt);
  }
- if(methodName === "reverse")
+ if(methodName === "Reverse")
  {
-  return replaceWithMethod(oldFileName, regExp, reverse, modName, modExt);
+  return replaceWithMethod(oldFileName, regExp, v.reverseGrapheme, modName, modExt);
  }
- if(methodName === "trim")
+ if(methodName === "Trim")
  {
-  return replaceWithMethod(oldFileName, regExp, trim, modName, modExt);
+  return replaceWithMethod(oldFileName, regExp, v.trim, modName, modExt);
+ }
+ if(methodName === "Pad right")
+ {
+  return replaceWithPad(oldFileName, regExp, padText, padder, length, false, modName, modExt);
+ }
+ if(methodName === "Pad left")
+ {
+  return replaceWithPad(oldFileName, regExp, padText, padder, length, true, modName, modExt);
  }
  return oldFileName;
 }
 
-function clearOldNamesList()
+function getNewNames()
 {
- document.getElementById("oldNamesList").value = '';
-}
-
-function clearNewNamesList()
-{
- document.getElementById("newNamesList").value = '';
-}
-
-function getNewNamesList()
-{
- let oldNames = document.getElementById("oldNamesList").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
- let methods = JSON.parse(document.getElementById("methodsList").value).methods;
+ let oldNames = document.getElementById("oldNames").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
+ let methods = JSON.parse(document.getElementById("methods").value).methods;
  let newNamesList = "";
  for(let i = 0; i < oldNames.length; i++)
  {
@@ -424,29 +502,25 @@ function getNewNamesList()
    let modName = methods[j].modifyName;
    let global = methods[j].global;
    let caseIns = methods[j].caseInsensitive;
-   newName = getNewFileName(methods[j].name, newName, regex, global, caseIns, replacement, num, i*increment, appendNum, prependNum, modName, modExt);
+   let padder = methods[j].padderText;
+   let length = methods[j].length;
+   newName = getNewName(methods[j].name, newName, regex, global, caseIns, replacement, num, i*increment, appendNum, prependNum, padder, length, modName, modExt);
   }
   newNamesList += newName + "\n";
  }
- newNamesList = newNamesList.slice(0, -1);
- document.getElementById("newNamesList").value = newNamesList;
+ document.getElementById("newNames").value = newNamesList.slice(0, -1);
 }
 
 function includes(container, content)
 {
- if(container !== null)
- {
-  return container.indexOf(content) !== -1;
- } 
- return false;
+ return (container !== null) ? (container.indexOf(content) !== -1) : false;
 }
 
-function sortOldNamesList()
+function sortOldNames()
 {
- let dirPath = (document.getElementById("enterPath").value.trim() + "\\").replace(/\\+/g,"\\");
- let regex = document.getElementById("enterRegexFilter").value;
- let caseIns = document.getElementById("caseInsFilter").checked;
- let regExp = getRegex(regex, false, caseIns);
+ let dirPath = (document.getElementById("dirPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ let caseInsFilter = document.getElementById("caseInsFilter").checked;
+ let regExp = getRegex(document.getElementById("filter").value, false, caseInsFilter);
  if(!object.FolderExists(dirPath) || dirPath === "\\")
  {
   alert("Directory not found");
@@ -454,24 +528,23 @@ function sortOldNamesList()
  else
  {
   let files = new Enumerator(object.GetFolder(dirPath).Files);
-  let fileNames = [];
+  let names = [];
   for(;!files.atEnd();files.moveNext())
   {
-   let fileName = files.item().Name;
-   if(includes(fileName.match(regExp),fileName))
+   let name = files.item().Name;
+   if(includes(name.match(regExp),name))
    {
-    fileNames.push(fileName);
+    names.push(name);
    }
   }
   let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-  fileNames.sort(collator.compare);
+  names.sort(collator.compare);
   let namesList = "";
-  for(let i = 0; i < fileNames.length; i++)
+  for(let i = 0; i < names.length; i++)
   {
-   namesList += fileNames[i] + "\n"; 
+   namesList += names[i] + "\n";
   }
-  namesList = namesList.slice(0, -1);
-  document.getElementById("oldNamesList").value = namesList;
+  document.getElementById("oldNames").value = namesList.slice(0, -1);
   if(namesList === "")
   {
    alert("No file found");
@@ -479,12 +552,12 @@ function sortOldNamesList()
  }
 }
 
-function rename()
+function renameFiles()
 {
  let openDir = document.getElementById("openDir").checked;
- let dirPath = (document.getElementById("enterPath").value.trim() + "\\").replace(/\\+/g,"\\");
- let oldNames = document.getElementById("oldNamesList").value.split("\n").filter(function (text){return text.search(/[^\s]/g) !== -1; });
- let newNames = document.getElementById("newNamesList").value.split("\n").filter(function (text){return text.search(/[^\s]/g) !== -1; });
+ let dirPath = (document.getElementById("dirPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ let oldNames = document.getElementById("oldNames").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
+ let newNames = document.getElementById("newNames").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
  let n = 0;
  for(let i = 0; i < oldNames.length; i++)
  {
