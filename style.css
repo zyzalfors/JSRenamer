@@ -1,0 +1,15 @@
+body, input[type=button] {   
+     background-color: lightgrey; 
+}
+
+* {
+   font-family: courier;
+}
+
+input[type=text], input[type=number]  {
+	width: 350px;
+}
+
+input[type=button] {
+	width: 200px;	
+}
