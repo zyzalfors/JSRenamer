@@ -2,32 +2,32 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>JS Renamer 1.1.2</title>
+<title>JS Renamer</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/voca/1.4.0/voca.min.js"></script>
 <script src="script.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
-JS Renamer 1.1.2
+JS Renamer 1.1.3
 <hr>
 <input type="text" id="dirPath" placeholder="Enter directory path">
+<input type="button" value="Open directory" onclick="openDirectory()">
 <br><br>
 <input type="text" id="filter" placeholder="Enter regular expression filter">
 <input type="checkbox" id="caseInsFilter" checked><label">Case insensitive</label>
+<input type="button" value="Sort old names" onclick="sortOldNames()">
 <br><br>
 <input type="button" value="Reset" onclick="location.reload()">
-<input type="button" value="Open directory" onclick="openDirectory()">
-<input type="button" value="Sort old names" onclick="sortOldNames()">
 <input type="button" value="Clear old names" onclick="clearArea(this.value)">
 <input type="button" value="Clear new names" onclick="clearArea(this.value)">
 <input type="button" value="Clear methods" onclick="clearArea(this.value)">
 <input type="button" value="Generate new names" onclick="getNewNames()">
 <br><br>
 <input type="button" value="Rename files" onclick="renameFiles()">
-<input type="checkbox" id="openDirAfter"><label>Open directory after renaming process</label>
+<input type="checkbox" id="openDirAfter"><label>Open directory</label>
 <br><br>
-<textarea wrap="off" onscroll="scrollNew()" id="oldNames" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort file names' and sort names of files to be renamed"></textarea>
-<textarea wrap="off" onscroll="scrollOld()" id="newNames" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Method data are stored as JSON&#10;- Press 'Generate new names' and sort new names"></textarea>
+<textarea wrap="off" onblur="removeBlankLines(this.id)" onscroll="scrollNew()" id="oldNames" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort old names' and sort names of files to be renamed"></textarea>
+<textarea wrap="off" onblur="removeBlankLines(this.id)" onscroll="scrollOld()" id="newNames" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Method data are stored as JSON&#10;- Press 'Generate new names' and sort new names"></textarea>
 <textarea wrap="off" id="methods" rows="30" cols="35" readonly>{ "methods" : [] }</textarea>
 <hr>
 <input type="text" id="length" placeholder="Enter length">
@@ -35,13 +35,13 @@ JS Renamer 1.1.2
 <br><br>
 <input type="number" id="number" placeholder="Enter starting number">
 <input type="number" id="increment" placeholder="Enter increment">
-<input type="checkbox" id="prependNum"><label>Prepend number</label>
-<input type="checkbox" id="appendNum" checked><label>Append number</label>
+<input type="checkbox" id="prependNum"><label>Prepend</label>
+<input type="checkbox" id="appendNum" checked><label>Append</label>
 <br><br>
 <input type="text" id="regex" placeholder="Enter regular expression">
 <input type="text" id="replacement" placeholder="Enter replacement">
-<input type="checkbox" id="global"><label>Global match</label>
-<input type="checkbox" id="caseIns"><label>Case insensitive match</label>
+<input type="checkbox" id="global"><label>Global</label>
+<input type="checkbox" id="caseIns"><label>Case insensitive</label>
 <br><br>
 <input type="checkbox" id="modName" checked><label>Modify name</label>
 <input type="checkbox" id="modExt"><label>Modify extension</label>

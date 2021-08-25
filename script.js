@@ -1,7 +1,7 @@
 let FSObj = new ActiveXObject("Scripting.FileSystemObject");
 
 function formatPath(path) { 
- return (path.trim() + "\\").replace(/\\+/g,"\\"); 
+ return (path.trim() + "\\").replace(/\\+/g,"\\");
 }
 
 function openDirectory() {
@@ -27,6 +27,12 @@ function scrollNew() {
 function scrollOld() {
  document.getElementById("oldNames").scrollTop = document.getElementById("newNames").scrollTop;
  document.getElementById("oldNames").scrollLeft = document.getElementById("newNames").scrollLeft;
+}
+
+function removeBlankLines(filter) {
+ let rows = document.getElementById(filter).value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
+ let text = rows.join('\n');
+ document.getElementById(filter).value = text;
 }
 
 function getName(fileName) {
@@ -403,7 +409,7 @@ function sortOldNames() {
 
 function renameFiles() {
  let openDirAfter = document.getElementById("openDirAfter").checked;
- let dirPath = (document.getElementById("dirPath").value.trim() + "\\").replace(/\\+/g,"\\");
+ let dirPath =  formatPath(document.getElementById("dirPath").value);
  let oldNames = document.getElementById("oldNames").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
  let newNames = document.getElementById("newNames").value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
  let n = 0;
