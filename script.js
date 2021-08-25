@@ -66,8 +66,7 @@ function toAlternatingCase1(text) {
  return newText;
 }
 
-function toAlternatingCase2(text)
-{
+function toAlternatingCase2(text) {
  let newText = "";
  let toUp = false;
  for (let i = 0; i < text.length; i++) {
@@ -88,8 +87,7 @@ function toAlternatingCase2(text)
  return newText;
 }
 
-function padText(text, padder, length, leftOrRight)
-{
+function padText(text, padder, length, leftOrRight) {
  let paddedTextChars = v.graphemes(text);
  let padderChars = v.graphemes(padder);
  let nPaddings = Math.ceil((length - paddedTextChars.length)/padderChars.length);
@@ -145,8 +143,7 @@ function toCapitalizedCase(text) {
  return newText;
 }
 
-function numbering(fileName, appendNum, prependNum, number)
-{
+function numbering(fileName, appendNum, prependNum, number) {
  let name = getName(fileName);
  let extension = getExtension(fileName);
  if(appendNum) { 
@@ -161,8 +158,7 @@ function numbering(fileName, appendNum, prependNum, number)
  return name;
 }
 
-function replaceWithMethod(fileName, regExp, method, modName, modExt)
-{
+function replaceWithMethod(fileName, regExp, method, modName, modExt) {
  let name = getName(fileName);
  let extension = getExtension(fileName);
  if(modExt && extension.trim() !== "") { 
@@ -177,8 +173,7 @@ function replaceWithMethod(fileName, regExp, method, modName, modExt)
  return name;
 }
 
-function replaceWithPad(fileName, regExp, padder, length, leftOrRight, modName, modExt)
-{
+function replaceWithPad(fileName, regExp, padder, length, leftOrRight, modName, modExt) {
  let name = getName(fileName);
  let extension = getExtension(fileName);
  if(modExt && extension.trim() !== "") {
@@ -193,8 +188,7 @@ function replaceWithPad(fileName, regExp, padder, length, leftOrRight, modName, 
  return name;
 }
 
-function replaceWithReplacement(fileName, regExp, replacement, modName, modExt)
-{
+function replaceWithReplacement(fileName, regExp, replacement, modName, modExt) {
  let name = getName(fileName);
  let extension = getExtension(fileName);
  if(modExt && extension.trim() !== "") { 
@@ -209,8 +203,7 @@ function replaceWithReplacement(fileName, regExp, replacement, modName, modExt)
  return name;
 }
 
-function clearArea(filter)
-{
+function clearArea(filter) {
  if(filter === "Clear new names") { 
   document.getElementById("newNames").value = ""; 
  }
