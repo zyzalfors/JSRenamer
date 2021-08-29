@@ -14,7 +14,3 @@ input[type=button] {
 input[type=number], input[type=text]  {
 	width: 350px;
 }
-
-textarea {
-	color: black;
-}
