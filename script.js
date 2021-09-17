@@ -381,19 +381,15 @@ function sortOldNames() {
  else {
   let files = new Enumerator(FSObj.GetFolder(dirPath).Files);
   let names = [];
-  for(;!files.atEnd();files.moveNext()) {
+  for(;!files.atEnd(); files.moveNext()) {
    let name = files.item().Name;
-   if(includes(name.match(regExp),name)) {
+   if(includes(name.match(regExp), name)) {
     names.push(name);
    }
   }
-  let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-  names.sort(collator.compare);
-  let namesList = "";
-  for(let i = 0; i < names.length; i++) {
-   namesList += names[i] + "\n";
-  }
-  document.getElementById("oldNames").value = namesList.slice(0, -1);
+  names.sort(new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'}).compare);
+  let namesList = names.join("\n");
+  document.getElementById("oldNames").value = namesList;
   if(namesList === "") {
    alert("No file found");
   }
