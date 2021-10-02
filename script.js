@@ -30,8 +30,7 @@ function scrollOld() {
 }
 
 function removeBlankLines(filter) {
- let rows = document.getElementById(filter).value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; });
- let text = rows.join('\n');
+ let text = document.getElementById(filter).value.split("\n").filter(function (text){ return text.search(/[^\s]/g) !== -1; }).join("\n");
  document.getElementById(filter).value = text;
 }
 
