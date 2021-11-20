@@ -8,7 +8,7 @@ function openDirectory() {
  let dirPath = formatPath(document.getElementById("dirPath").value);
  if(FSObj.FolderExists(dirPath) && dirPath !== "\\") {
   try {
-    window.open(dirPath); 
+   window.open(dirPath); 
   }
   catch(error) { 
    alert("Directory cannot be opened"); 
@@ -47,8 +47,8 @@ function getExtension(fileName) {
 function toAlternatingCase1(text) {
  let newText = "";
  let toUp = true;
- for (let i = 0; i < text.length; i++) {
-  if (text[i].toUpperCase() !== text[i].toLowerCase()) {
+ for(let i = 0; i < text.length; i++) {
+  if(text[i].toUpperCase() !== text[i].toLowerCase()) {
    if(toUp === true) {
     newText += text[i].toUpperCase();
     toUp = false;
@@ -68,8 +68,8 @@ function toAlternatingCase1(text) {
 function toAlternatingCase2(text) {
  let newText = "";
  let toUp = false;
- for (let i = 0; i < text.length; i++) {
-  if (text[i].toUpperCase() !== text[i].toLowerCase()) {
+ for(let i = 0; i < text.length; i++) {
+  if(text[i].toUpperCase() !== text[i].toLowerCase()) {
    if(toUp === true) {
     newText += text[i].toUpperCase();
     toUp = false;
@@ -229,46 +229,54 @@ function addMethod(filter) {
  let length = parseInt(document.getElementById("length").value);
  let padder = document.getElementById("padder").value;
  if(filter === "Numbering") {
-  json.methods.push({
+  json.methods.push(
+	            {
                      "name": filter, 
                      "startingNumber": number,
-					 "increment" : increment, 
-					 "prependNumber": prependNum, 
-					 "appendNumber": appendNum
-					});
+		     "increment" : increment, 
+		     "prependNumber": prependNum, 
+		     "appendNumber": appendNum
+		    }
+                   );
  }
  else if(filter === "Replace") {
-  json.methods.push({
+  json.methods.push(
+	            {
                      "name": filter, 
-					 "regularExpression": regex,
-					 "global" : global, 
-					 "caseInsensitive" : caseIns, 
-					 "replacement" : replacement, 
-					 "modifyName" : modName, 
-					 "modifyExtension" : modExt
-					});
+		     "regularExpression": regex,
+		     "global" : global, 
+		     "caseInsensitive" : caseIns, 
+		     "replacement" : replacement, 
+		     "modifyName" : modName, 
+		     "modifyExtension" : modExt
+		    }
+                   );
  }
  else if(filter === "Pad right" || filter === "Pad left") {
-  json.methods.push({
+  json.methods.push(
+	            {
                      "name": filter, 
-					 "regularExpression": regex,
-					 "global" : global, 
-					 "caseInsensitive" : caseIns, 
-					 "padderText" : padder,
-					 "length" : length,
-					 "modifyName" : modName, 
-					 "modifyExtension" : modExt
-					});
+		     "regularExpression": regex,
+		     "global" : global, 
+		     "caseInsensitive" : caseIns, 
+		     "padderText" : padder,
+		     "length" : length,
+		     "modifyName" : modName, 
+		     "modifyExtension" : modExt
+		    }
+                   );
  }
  else {
-  json.methods.push({
+  json.methods.push(
+	            {
                      "name": filter, 
-					 "regularExpression": regex, 
-					 "global" : global, 
-					 "caseInsensitive" : caseIns,
-					 "modifyName" : modName, 
-					 "modifyExtension" : modExt
-					});
+		     "regularExpression": regex, 
+		     "global" : global, 
+		     "caseInsensitive" : caseIns,
+		     "modifyName" : modName, 
+	    	     "modifyExtension" : modExt
+		    }
+                   );
  }
  document.getElementById("methods").value = JSON.stringify(json,null,1);
 }
@@ -367,7 +375,7 @@ function getNewNames() {
 }
 
 function includes(container, content) {
- return (container !== null) ? (container.indexOf(content) !== -1) : false;
+ return container !== null ? container.indexOf(content) !== -1 : false;
 }
 
 function sortOldNames() {
