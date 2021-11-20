@@ -36,12 +36,12 @@ function removeBlankLines(filter) {
 
 function getName(fileName) {
  let pos = fileName.lastIndexOf(".");
- return (pos !== -1) ? fileName.substring(0, pos) : fileName;
+ return pos !== -1 ? fileName.substring(0, pos) : fileName;
 }
 
 function getExtension(fileName) {
  let pos = fileName.lastIndexOf(".");
- return (pos !== -1) ? fileName.substring(pos + 1) : "";
+ return pos !== -1 ? fileName.substring(pos + 1) : "";
 }
 
 function toAlternatingCase1(text) {
