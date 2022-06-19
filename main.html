@@ -2,36 +2,35 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>JS Renamer</title>
+<title>JS Renamer v1.1.5</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/voca/1.4.0/voca.min.js"></script>
 <script src="script.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css"/>
 </head>
 <body>
-JS Renamer
-<hr>
+JS Renamer v1.1.5
+<br><br>
 <input type="text" id="dirPath" placeholder="Enter directory path">
 <input type="button" value="Open directory" onclick="openDirectory()">
 <br><br>
 <input type="text" id="filter" placeholder="Enter regular expression filter">
-<input type="checkbox" id="caseInsFilter" checked><label">Case insensitive</label>
+<input type="checkbox" id="caseInsFilter" checked><label">Case-insensitive</label>
 <input type="button" value="Sort old names" onclick="sortOldNames()">
 <br><br>
-<input type="button" value="Reset" onclick="location.reload()">
-<input type="button" value="Clear old names" onclick="clearArea(this.value)">
-<input type="button" value="Clear new names" onclick="clearArea(this.value)">
-<input type="button" value="Clear methods" onclick="clearArea(this.value)">
+<input type="button" value="Clear old names" onclick="document.getElementById('oldNames').value = ''">
+<input type="button" value="Clear new names" onclick="document.getElementById('newNames').value = ''">
+<input type="button" value="Clear methods" onclick="clearMethods()">
 <input type="button" value="Generate new names" onclick="getNewNames()">
 <br><br>
 <input type="button" value="Rename files" onclick="renameFiles()">
 <input type="checkbox" id="openDirAfter"><label>Open directory</label>
 <br><br>
-<textarea wrap="off" onblur="removeBlankLines(this.id)" onscroll="scrollNew()" id="oldNames" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort old names' and sort names of files to be renamed"></textarea>
-<textarea wrap="off" onblur="removeBlankLines(this.id)" onscroll="scrollOld()" id="newNames" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Method data are stored as JSON&#10;- Press 'Generate new names' and sort new names"></textarea>
+<textarea wrap="off" onblur="removeEmptyLines(this.id)" onscroll="scrollArea(this.id)" id="oldNames" rows="30" cols="80" placeholder="- Enter path of directory containing files to be renamed&#10;- Press 'Sort old names' and sort names of files to be renamed"></textarea>
+<textarea wrap="off" onblur="removeEmptyLines(this.id)" onscroll="scrollArea(this.id)" id="newNames" rows="30" cols="80" placeholder="- Enter personalized new names&#10;or&#10;- Set methods to be used to generate new names. Method data are stored as JSON&#10;- Press 'Generate new names' and sort new names"></textarea>
 <textarea wrap="off" id="methods" rows="30" cols="35" readonly>{ "methods" : [] }</textarea>
-<hr>
+<br><br>
 <input type="text" id="length" placeholder="Enter length">
-<input type="text" id="padder" placeholder="Enter padder text">
+<input type="text" id="pad" placeholder="Enter pad text">
 <br><br>
 <input type="number" id="number" placeholder="Enter starting number">
 <input type="number" id="increment" placeholder="Enter increment">
@@ -41,24 +40,32 @@ JS Renamer
 <input type="text" id="regex" placeholder="Enter regular expression">
 <input type="text" id="replacement" placeholder="Enter replacement">
 <input type="checkbox" id="global"><label>Global</label>
-<input type="checkbox" id="caseIns"><label>Case insensitive</label>
+<input type="checkbox" id="caseIns"><label>Case-insensitive</label>
 <br><br>
 <input type="checkbox" id="modName" checked><label>Modify name</label>
 <input type="checkbox" id="modExt"><label>Modify extension</label>
 <br><br>
-<input type="button" value="Upper case" onclick="addMethod(this.value)">
-<input type="button" value="Lower case" onclick="addMethod(this.value)">
-<input type="button" value="Inverse case" onclick="addMethod(this.value)">
-<input type="button" value="Alternating case 1" onclick="addMethod(this.value)">
-<input type="button" value="Alternating case 2" onclick="addMethod(this.value)">
-<input type="button" value="Capitalized case" onclick="addMethod(this.value)">
-<input type="button" value="Latinise" onclick="addMethod(this.value)">
-<input type="button" value="Reverse" onclick="addMethod(this.value)">
-<br><br>
-<input type="button" value="Trim" onclick="addMethod(this.value)">
-<input type="button" value="Replace" onclick="addMethod(this.value)">
-<input type="button" value="Numbering" onclick="addMethod(this.value)">
-<input type="button" value="Pad right" onclick="addMethod(this.value)">
-<input type="button" value="Pad left" onclick="addMethod(this.value)">
+<select id="methodList">
+<option value="null">--Select a method--</option>
+<option value="Convert to alternating case 1">Convert to alternating case 1</option>
+<option value="Convert to alternating case 2">Convert to alternating case 2</option>
+<option value="Convert to camel case">Convert to camel case</option>
+<option value="Convert to inverse case">Convert to inverse case</option>
+<option value="Convert to kebab case">Convert to kebab case</option>
+<option value="Convert to lower case">Convert to lower case</option>
+<option value="Convert to slug case">Convert to slug case</option>
+<option value="Convert to snake case">Convert to snake case</option>
+<option value="Convert to title case">Convert to title case</option>
+<option value="Convert to upper case">Convert to upper case</option>
+<option value="Remove spaces">Remove spaces</option>
+<option value="Remove redundant spaces">Remove redundant spaces</option>
+<option value="Reverse">Reverse</option>
+<option value="Replace">Replace</option>
+<option value="Latinise">Latinise</option>
+<option value="Pad left">Pad left</option>
+<option value="Pad right">Pad right</option>
+<option value="Numbering">Numbering</option>
+</select>
+<input type="button" value="Add method" onclick="addMethod()">
 </body>
 </html>
