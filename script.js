@@ -217,7 +217,7 @@ function addMethod()
                      {
                       "method": method,
                       "startNum": number,
-                      "increment" : increment,
+                      "increment": increment,
                       "prependNum": prependNum,
                       "appendNum": appendNum
                      }
@@ -228,11 +228,11 @@ function addMethod()
                      {
                       "method": method,
                       "regex": regex,
-                      "global" : global,
-                      "caseIns" : caseIns,
-                      "replacement" : replacement,
-                      "modName" : modName,
-                      "modExt" : modExt
+                      "global": global,
+                      "caseIns": caseIns,
+                      "replacement": replacement,
+                      "modName": modName,
+                      "modExt": modExt
                      }
                     );
    break;
@@ -242,12 +242,12 @@ function addMethod()
                      {
                       "method": method,
                       "regex": regex,
-                      "global" : global,
-                      "caseIns" : caseIns,
-                      "pad" : pad,
-                      "length" : length,
-                      "modName" : modName,
-                      "modExt" : modExt
+                      "global": global,
+                      "caseIns": caseIns,
+                      "pad": pad,
+                      "length": length,
+                      "modName": modName,
+                      "modExt": modExt
                      }
                     );
    break;
@@ -256,10 +256,10 @@ function addMethod()
                      {
                       "method": method,
                       "regex": regex,
-                      "global" : global,
-                      "caseIns" : caseIns,
-                      "modName" : modName,
-                      "modExt" : modExt
+                      "global": global,
+                      "caseIns": caseIns,
+                      "modName": modName,
+                      "modExt": modExt
                      }
                     );
  }
@@ -344,7 +344,7 @@ function getNewName(fileName, method, regex, global, caseIns, replacement, numbe
    return replaceUsingMethod(fileName, regExp, removeRedundantSpaces, modName, modExt);
    break;
   default:
-  return fileName;
+   return fileName;
  }
 }
 
